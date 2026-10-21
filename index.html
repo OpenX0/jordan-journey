@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f7f5ef">
+  <title>Jordan Journey — เที่ยวจอร์แดนง่ายกว่าที่เคย</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #192d3a;
+      --muted: #71808a;
+      --paper: #f7f5ef;
+      --white: #fff;
+      --control-bg: #fff;
+      --soft-surface: #f4f5f2;
+      --warm-surface: #fffefa;
+      --blue: #173b4b;
+      --blue-light: #eaf1f2;
+      --sand: #ead3aa;
+      --orange: #df7548;
+      --line: #e9e7df;
+      --shadow: 0 14px 38px rgba(30, 47, 53, .07);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    .shell { width: min(1240px, calc(100% - 64px)); margin: 0 auto; }
+    .topbar {
+      position: relative;
+      height: 82px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(25, 45, 58, .08);
+    }
+    .brand { display: flex; align-items: center; gap: 11px; font-weight: 750; letter-spacing: -.4px; }
+    .brand-mark {
+      width: 37px; height: 37px; display: grid; place-items: center;
+      border-radius: 12px; background: var(--blue); color: white; font-size: 19px;
+    }
+    .brand small { display: block; margin-top: 2px; color: var(--muted); font-size: 10px; font-weight: 500; letter-spacing: .9px; }
+    .nav { display: flex; gap: 30px; align-items: center; }
+    .nav a { color: #52636e; text-decoration: none; font-size: 13px; font-weight: 600; }
+    .nav a:hover { color: var(--orange); }
+    .trip-chip { padding: 9px 14px; background: white; border: 1px solid var(--line); border-radius: 99px; font-size: 12px; }
+    .trip-chip span { margin-right: 6px; }
+    .header-actions { display: flex; align-items: center; gap: 9px; }
+    .settings-button { width: 38px; height: 38px; border: 1px solid var(--line); border-radius: 50%; color: var(--ink); background: var(--control-bg); font-size: 17px; }
+    .settings-panel { position: absolute; z-index: 5; top: 70px; right: 0; width: 230px; padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--white); box-shadow: var(--shadow); }
+    .settings-panel[hidden] { display: none; }
+    .settings-panel label { display: block; margin-bottom: 8px; font-size: 12px; font-weight: 700; }
+    .settings-panel select { width: 100%; padding: 9px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: var(--control-bg); font-size: 12px; }
+    .settings-status { min-height: 14px; margin: 8px 0 0; color: var(--muted); font-size: 10px; }
+
+    .hero {
+      min-height: 300px; position: relative; overflow: hidden; margin-top: 30px;
+      display: flex; align-items: center; border-radius: 22px; color: white;
+      background: linear-gradient(90deg, rgba(16, 39, 49, .89) 0%, rgba(16, 39, 49, .68) 48%, rgba(16,39,49,.06) 100%),
+        url("https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1800&q=85") center 53% / cover;
+    }
+    .hero-copy { position: relative; z-index: 1; padding: 38px 55px; max-width: 620px; }
+    .eyebrow { color: #f0c38d; text-transform: uppercase; letter-spacing: 2.2px; font-size: 10px; font-weight: 750; }
+    h1 { margin: 13px 0 10px; font-size: clamp(30px, 4vw, 47px); line-height: 1.15; letter-spacing: -1.5px; }
+    .hero p { max-width: 430px; margin: 0; color: rgba(255,255,255,.8); font-size: 14px; line-height: 1.75; }
+    .hero-cta { display: inline-flex; margin-top: 20px; padding: 11px 16px; border-radius: 9px; background: white; color: var(--ink); text-decoration: none; font-size: 12px; font-weight: 700; }
+    .hero-stamp {
+      position: absolute; right: 43px; bottom: 29px; width: 90px; height: 90px;
+      display: grid; place-items: center; border: 1px solid rgba(255,255,255,.5);
+      border-radius: 50%; color: white; text-align: center; font-size: 10px; line-height: 1.5;
+      transform: rotate(9deg);
+    }
+
+    .section-heading { display: flex; align-items: end; justify-content: space-between; margin: 36px 0 17px; }
+    .section-heading h2 { margin: 0; font-size: 20px; letter-spacing: -.45px; }
+    .section-heading p { margin: 5px 0 0; color: var(--muted); font-size: 12px; }
+    .section-heading a { color: var(--orange); text-decoration: none; font-size: 12px; font-weight: 700; }
+    .tools { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .card { background: var(--white); border: 1px solid rgba(31, 49, 57, .05); border-radius: 16px; box-shadow: var(--shadow); }
+    .tool-card { min-height: 257px; padding: 22px; }
+    .tool-card.is-collapsed { min-height: 0; padding-block: 14px; }
+    .airport-card[hidden] { display: none; }
+    .card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .card-title { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 750; }
+    .card-heading { display: flex; align-items: center; gap: 9px; min-width: 0; }
+    .collapse-button { flex: 0 0 auto; padding: 7px 9px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: var(--control-bg); font-size: 10px; }
+    .collapsible-content[hidden] { display: none; }
+    .icon-box { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 11px; background: var(--blue-light); font-size: 17px; }
+    .subtle-tag { padding: 6px 9px; border-radius: 99px; color: #667880; background: #f4f5f2; font-size: 10px; }
+    .money-fields { display: grid; grid-template-columns: 1fr 42px 1fr; align-items: end; gap: 10px; }
+    .field-label { display: block; margin-bottom: 8px; color: var(--muted); font-size: 10px; }
+    .money-input-wrap { display: flex; overflow: hidden; border: 1px solid var(--line); border-radius: 9px; }
+    .money-input-wrap input { width: 100%; min-width: 0; padding: 12px 10px; border: 0; outline: none; color: var(--ink); font-size: 16px; font-weight: 700; }
+    .currency-select { padding: 0 7px; border: 0; border-left: 1px solid var(--line); outline: none; color: var(--ink); background: var(--soft-surface); font-size: 11px; font-weight: 700; }
+    .swap-button { width: 38px; height: 38px; margin-bottom: 1px; border: 1px solid var(--line); border-radius: 50%; background: var(--control-bg); color: var(--blue); font-size: 17px; }
+    .rate-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 16px; color: var(--muted); font-size: 10px; }
+    .rate-row button { padding: 0; border: 0; background: none; color: var(--orange); font-size: 10px; font-weight: 700; }
+    .rate-row button:disabled { cursor: wait; opacity: .6; }
+
+    .translate-form { display: grid; gap: 10px; }
+    .language-row { display: flex; align-items: center; gap: 8px; }
+    .language-row select { flex: 1; padding: 9px 10px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: var(--control-bg); font-size: 11px; }
+    .language-row .swap-button { flex: 0 0 34px; width: 34px; height: 34px; }
+    .translate-bottom { display: flex; align-items: center; gap: 9px; }
+    .translate-bottom input { flex: 1; min-width: 0; padding: 11px 12px; border: 1px solid var(--line); border-radius: 8px; outline: none; font-size: 12px; }
+    .primary-button { padding: 11px 15px; border: 0; border-radius: 8px; color: white; background: var(--blue); font-size: 11px; font-weight: 700; }
+    .translation-result { min-height: 30px; margin-top: 12px; padding: 9px 11px; border-radius: 8px; background: #f5f7f4; color: #607079; font-size: 11px; line-height: 1.55; }
+    .translation-line { display: flex; align-items: center; justify-content: space-between; gap: 9px; margin-top: 4px; }
+    .translation-line strong { color: var(--ink); font-size: 13px; }
+    .speak-button { flex: 0 0 auto; padding: 5px 8px; border: 1px solid var(--line); border-radius: 7px; color: var(--blue); background: white; font-size: 10px; font-weight: 650; }
+    .speak-button:hover { background: var(--blue-light); }
+    .speech-status { min-height: 15px; margin-top: 5px; color: var(--muted); font-size: 10px; }
+
+    .airport-card { padding: 23px; }
+    .airport-intro { max-width: 700px; margin: -7px 0 18px; color: var(--muted); font-size: 11px; line-height: 1.7; }
+    .airport-search { width: 100%; margin-bottom: 17px; padding: 11px 13px; border: 1px solid var(--line); border-radius: 9px; outline: none; color: var(--ink); background: var(--control-bg); font-size: 12px; }
+    .airport-search:focus { border-color: #9fb7bb; box-shadow: 0 0 0 3px rgba(23, 59, 75, .07); }
+    .airport-areas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .airport-area { min-width: 0; padding: 13px; border: 1px solid var(--line); border-radius: 11px; background: var(--warm-surface); }
+    .airport-area[hidden] { display: none; }
+    .airport-area-type { display: inline-block; margin-bottom: 9px; color: #a96a47; font-size: 9px; font-weight: 700; }
+    .airport-area strong { display: block; font-size: 12px; }
+    .airport-area-en { display: block; margin-top: 4px; color: var(--muted); font-size: 10px; }
+    .airport-area-ar { display: block; margin-top: 8px; color: var(--blue); font-size: 18px; font-weight: 700; }
+    .airport-area-pronunciation { display: block; margin-top: 3px; color: var(--muted); font-size: 9px; }
+    .airport-area button { width: 100%; margin-top: 11px; padding: 8px; border: 0; border-radius: 7px; color: var(--blue); background: var(--blue-light); font-size: 10px; font-weight: 700; }
+    .airport-empty { display: none; padding: 14px; color: var(--muted); text-align: center; font-size: 11px; }
+    .airport-empty.visible { display: block; }
+    .airport-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 16px; padding-top: 14px; border-top: 1px solid #f0eee9; color: var(--muted); font-size: 10px; }
+    .airport-map-link { color: var(--orange); text-decoration: none; font-weight: 700; }
+
+    .map-layout { display: grid; grid-template-columns: 1.6fr 1fr; gap: 18px; margin-bottom: 42px; }
+    .map-card { min-height: 300px; overflow: hidden; position: relative; }
+    .map-card iframe { width: 100%; height: 100%; min-height: 300px; display: block; border: 0; }
+    .map-label { position: absolute; z-index: 2; left: 14px; top: 14px; padding: 10px 13px; border-radius: 10px; background: white; box-shadow: 0 5px 18px rgba(0,0,0,.1); font-size: 11px; font-weight: 750; }
+    .map-label span { display: block; margin-top: 3px; color: var(--muted); font-size: 9px; font-weight: 500; }
+    .places-card { padding: 21px; }
+    .places-card h3 { margin: 1px 0 15px; font-size: 14px; }
+    .place { display: flex; align-items: center; gap: 12px; padding: 11px 0; border-top: 1px solid #f0eee9; }
+    .place-icon { display: grid; place-items: center; flex: 0 0 35px; height: 35px; border-radius: 10px; background: #f4f1e9; }
+    .place-info { flex: 1; }
+    .place-info strong { display: block; font-size: 11px; }
+    .place-info span { display: block; margin-top: 4px; color: var(--muted); font-size: 9px; }
+    .place-arrow { color: #9aa5a8; font-size: 17px; }
+    .map-link { display: block; margin-top: 9px; padding: 10px; border-radius: 8px; color: var(--blue); background: var(--blue-light); text-align: center; text-decoration: none; font-size: 10px; font-weight: 700; }
+    footer { padding: 18px 0 25px; border-top: 1px solid var(--line); color: var(--muted); text-align: center; font-size: 10px; }
+
+    @media (max-width: 760px) {
+      .shell { width: min(100% - 32px, 560px); }
+      .topbar { height: 68px; }
+      .nav { display: none; }
+      .trip-chip { display: none; }
+      .trip-chip { font-size: 10px; padding: 8px 10px; }
+      .hero { min-height: 290px; margin-top: 18px; background-position: 57% center; }
+      .hero-copy { padding: 29px 25px; }
+      .hero p { max-width: 310px; font-size: 12px; }
+      .hero-stamp { right: 15px; bottom: 14px; width: 65px; height: 65px; font-size: 8px; }
+      .tools, .map-layout { grid-template-columns: 1fr; }
+      .tool-card { min-height: 0; padding: 18px; }
+      .airport-card { padding: 18px; }
+      .airport-areas { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .section-heading { margin-top: 28px; }
+      .section-heading h2 { font-size: 18px; }
+      .map-layout { gap: 12px; }
+      .places-card { padding: 18px; }
+    }
+    @media (max-width: 390px) {
+      .money-fields { grid-template-columns: 1fr 34px 1fr; gap: 6px; }
+      .money-input-wrap input { padding: 11px 7px; font-size: 14px; }
+      .swap-button { width: 32px; height: 32px; }
+      .translate-bottom { flex-wrap: wrap; }
+      .translate-bottom input { flex-basis: 100%; }
+      .primary-button { flex: 1; }
+      .airport-areas { grid-template-columns: 1fr; }
+      .airport-footer { align-items: flex-start; flex-direction: column; }
+    }
+    body[data-theme="dark"] {
+      color-scheme: dark;
+      --ink: #e8edf0;
+      --muted: #a5b1b7;
+      --paper: #11191e;
+      --white: #1b272e;
+      --control-bg: #202d34;
+      --soft-surface: #26343b;
+      --warm-surface: #1d292f;
+      --blue: #a7d0dc;
+      --blue-light: #293d45;
+      --line: #34434a;
+      --shadow: 0 14px 38px rgba(0, 0, 0, .22);
+    }
+    body[data-theme="dark"] .nav a { color: #bdc8cc; }
+    body[data-theme="dark"] .trip-chip { background: var(--white); }
+    body[data-theme="dark"] .subtle-tag { color: #c0cbce; background: #2a383e; }
+    body[data-theme="dark"] .translation-result { background: #202d32; color: var(--muted); }
+    body[data-theme="dark"] .speak-button { color: var(--blue); background: var(--control-bg); }
+    body[data-theme="dark"] .airport-area { border-color: var(--line); }
+    body[data-theme="dark"] .place { border-color: var(--line); }
+    body[data-theme="dark"] .place-icon { background: #2a383e; }
+    body[data-theme="dark"] .map-label { color: #192d3a; }
+    body[data-theme="dark"] .hero-cta { color: #192d3a; }
+    body[data-theme="dark"] .map-link { color: #c3e0e7; }
+    body[data-theme="dark"] .airport-area-type { color: #efb28d; }
+    body[data-theme="dark"] .primary-button { color: #11191e; background: #a7d0dc; }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Jordan Journey หน้าแรก">
+        <span class="brand-mark">✦</span>
+        <span>Jordan Journey<small>YOUR LITTLE TRAVEL COMPANION</small></span>
+      </a>
+      <nav class="nav" aria-label="เมนูหลัก">
+        <a href="#currency">แปลงค่าเงิน</a>
+        <a href="#translate">วลีเดินทาง</a>
+        <a href="#airport">สนามบิน</a>
+        <a href="#map">แผนที่</a>
+      </nav>
+      <div class="header-actions">
+        <div class="trip-chip"><span>✈</span> จอร์แดน · 7 วัน</div>
+        <button class="settings-button" id="settings-button" type="button" aria-label="เปิดการตั้งค่า" aria-expanded="false" aria-controls="settings-panel">⚙</button>
+      </div>
+      <div class="settings-panel" id="settings-panel" hidden>
+        <label for="theme-select">ธีมพื้นหลัง</label>
+        <select id="theme-select">
+          <option value="light">สว่าง · พื้นหลังขาว</option>
+          <option value="dark">มืด · พื้นหลังดำ</option>
+        </select>
+        <p class="settings-status" id="settings-status" role="status"></p>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <div class="eyebrow">WELCOME TO JORDAN</div>
+          <h1 id="hero-title">พร้อมออกเดินทาง<br>สู่ดินแดนทะเลทราย</h1>
+          <p>รวมตัวช่วยจำเป็นสำหรับทริปจอร์แดนไว้ที่เดียว ทั้งค่าเงิน ภาษา และสถานที่ที่ไม่ควรพลาด</p>
+          <a class="hero-cta" href="#currency">เริ่มวางแผนทริป <span aria-hidden="true">&nbsp; ↗</span></a>
+        </div>
+        <div class="hero-stamp">AHLAAN<br>WA SAHLAAN<br>أهلاً وسهلاً</div>
+      </section>
+
+      <section id="currency" aria-labelledby="tools-title">
+        <div class="section-heading">
+          <div><h2 id="tools-title">ตัวช่วยระหว่างเดินทาง</h2><p>เครื่องมือเล็ก ๆ ที่ทำให้เที่ยวได้สบายใจขึ้น</p></div>
+        </div>
+        <div class="tools">
+          <article class="card tool-card">
+            <div class="card-top">
+              <div class="card-heading">
+                <div class="card-title"><span class="icon-box">💱</span> แปลงค่าเงิน</div>
+                <button class="collapse-button" type="button" aria-expanded="true" aria-controls="currency-content">ซ่อน</button>
+              </div>
+              <span class="subtle-tag">JOD · THB · USD</span>
+            </div>
+            <div id="currency-content" class="collapsible-content">
+              <div class="money-fields">
+                <label><span class="field-label">จำนวนเงิน</span><span class="money-input-wrap"><input id="amount" type="number" min="0" step="any" value="10" inputmode="decimal" aria-label="จำนวนเงิน"><select class="currency-select" id="from-currency" aria-label="สกุลเงินต้นทาง"><option value="JOD">JOD</option><option value="THB">THB</option><option value="USD">USD</option></select></span></label>
+                <button class="swap-button" id="currency-swap" type="button" aria-label="สลับสกุลเงิน">⇄</button>
+                <label><span class="field-label">ประมาณ</span><span class="money-input-wrap"><input id="converted" type="text" value="500.00" readonly aria-label="จำนวนเงินหลังแปลง"><select class="currency-select" id="to-currency" aria-label="สกุลเงินปลายทาง"><option value="JOD">JOD</option><option value="THB" selected>THB</option><option value="USD">USD</option></select></span></label>
+              </div>
+              <div class="rate-row"><span id="rate-text" aria-live="polite">อัตราโดยประมาณ · กำลังโหลดอัตราล่าสุด…</span><button id="refresh-rate" type="button">อัปเดตอัตรา</button></div>
+            </div>
+          </article>
+
+          <article class="card tool-card" id="translate">
+            <div class="card-top">
+              <div class="card-heading">
+                <div class="card-title"><span class="icon-box">💬</span> วลีเอาตัวรอด</div>
+                <button class="collapse-button" type="button" aria-expanded="true" aria-controls="translate-content">ซ่อน</button>
+              </div>
+              <span class="subtle-tag">ไทย · อังกฤษ · อาหรับ</span>
+            </div>
+            <div id="translate-content" class="collapsible-content">
+              <div class="translate-form">
+                <div class="language-row">
+                  <select id="source-language" aria-label="ภาษาต้นทาง"><option value="th">ไทย</option><option value="en">English</option><option value="ar">العربية</option></select>
+                  <button class="swap-button" id="language-swap" type="button" aria-label="สลับภาษาต้นทางและภาษาแปล">⇄</button>
+                  <select id="target-language" aria-label="ภาษาแปล"><option value="ar">العربية</option><option value="th">ไทย</option><option value="en">English</option></select>
+                </div>
+                <div class="translate-bottom">
+                  <input id="phrase" type="text" placeholder="ลองพิมพ์: สวัสดี, ขอบคุณ, ห้องน้ำอยู่ไหน" aria-label="พิมพ์วลีที่ต้องการค้นหา">
+                  <button class="primary-button" id="translate-button" type="button">แปลด้วย API</button>
+                </div>
+              </div>
+              <div class="translation-result" id="translation-result" aria-live="polite">ลองค้นหาวลีท่องเที่ยวพื้นฐาน เช่น “สวัสดี” หรือ “ขอบคุณ”</div>
+              <div class="speech-status" id="speech-status" role="status" aria-live="polite"></div>
+              <div class="field-label">ใช้ MyMemory Translation API · ข้อความที่พิมพ์จะถูกส่งไปแปลผ่านอินเทอร์เน็ต</div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="airport" aria-labelledby="airport-title">
+        <div class="section-heading">
+          <div><h2 id="airport-title">คู่มือแปลป้ายสนามบินควีนอาเลีย</h2><p>Queen Alia International Airport · AMM</p></div>
+          <button class="collapse-button" type="button" aria-expanded="true" aria-controls="airport-content">ซ่อน</button>
+        </div>
+        <article class="card airport-card collapsible-content" id="airport-content">
+          <p class="airport-intro">รวมคำศัพท์ตามจุดใช้งานในสนามบิน แสดงภาษาไทย อังกฤษ และอาหรับพร้อมคำอ่านภาษาไทย แตะ “ส่งไปแปล” เพื่อใช้ตัวแปล API หรือดูคำแปลสำรองได้</p>
+          <input class="airport-search" id="airport-search" type="search" placeholder="ค้นหาจุด เช่น รับกระเป๋า, arrivals, الجوازات" aria-label="ค้นหาพื้นที่และป้ายในสนามบิน">
+          <div class="airport-areas" id="airport-areas"></div>
+          <div class="airport-empty" id="airport-empty">ไม่พบคำที่ค้นหา ลองใช้ภาษาไทย อังกฤษ หรืออาหรับ</div>
+          <div class="airport-footer">
+            <span>ข้อมูลนี้เป็นคำแปลป้ายทั่วไป ไม่ใช่แผนผังภายในอาคาร</span>
+            <a class="airport-map-link" href="https://www.google.com/maps/search/?api=1&query=Queen+Alia+International+Airport+Amman" target="_blank" rel="noopener noreferrer">เปิดตำแหน่งสนามบินในแผนที่ ↗</a>
+          </div>
+        </article>
+      </section>
+
+      <section id="map" aria-labelledby="map-title">
+        <div class="section-heading">
+          <div><h2 id="map-title">ออกสำรวจจอร์แดน</h2><p>ปักหมุดสถานที่ไฮไลต์ แล้วเริ่มออกเดินทาง</p></div>
+          <div class="card-heading">
+            <a href="https://www.openstreetmap.org/#map=7/31.2/36.2" target="_blank" rel="noopener noreferrer">เปิดแผนที่เต็ม ↗</a>
+            <button class="collapse-button" type="button" aria-expanded="true" aria-controls="map-content">ซ่อน</button>
+          </div>
+        </div>
+        <div class="map-layout collapsible-content" id="map-content">
+          <div class="card map-card">
+            <div class="map-label">แผนที่ประเทศจอร์แดน<span>Jordan · الأردن</span></div>
+            <iframe title="แผนที่ประเทศจอร์แดนจาก OpenStreetMap" src="https://www.openstreetmap.org/export/embed.html?bbox=34.8%2C29.1%2C39.4%2C33.4&layer=mapnik&marker=31.95%2C35.93" loading="lazy"></iframe>
+          </div>
+          <aside class="card places-card">
+            <h3>สถานที่แนะนำ</h3>
+            <div class="place"><span class="place-icon">🏛️</span><div class="place-info"><strong>เพตรา</strong><span>นครหินสีชมพู · มรดกโลก UNESCO</span></div><span class="place-arrow">›</span></div>
+            <div class="place"><span class="place-icon">🏜️</span><div class="place-info"><strong>วาดิรัม</strong><span>ทะเลทรายสีแดง · นอนเต็นท์ดูดาว</span></div><span class="place-arrow">›</span></div>
+            <div class="place"><span class="place-icon">🌊</span><div class="place-info"><strong>ทะเลเดดซี</strong><span>ลอยตัวในจุดต่ำที่สุดบนโลก</span></div><span class="place-arrow">›</span></div>
+            <a class="map-link" href="https://www.openstreetmap.org/#map=7/31.2/36.2" target="_blank" rel="noopener noreferrer">ดูจอร์แดนบนแผนที่ ↗</a>
+          </aside>
+        </div>
+      </section>
+    </main>
+    <footer>ทำให้การเดินทางในจอร์แดนเป็นเรื่องง่ายขึ้น · Jordan Journey</footer>
+  </div>
+
+  <script>
+    (() => {
+      const settingsButton = document.querySelector("#settings-button");
+      const settingsPanel = document.querySelector("#settings-panel");
+      const themeSelect = document.querySelector("#theme-select");
+      const settingsStatus = document.querySelector("#settings-status");
+      const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+
+      function applyTheme(theme, save = false) {
+        const isDark = theme === "dark";
+        document.body.dataset.theme = isDark ? "dark" : "light";
+        themeSelect.value = isDark ? "dark" : "light";
+        themeColorMeta.content = isDark ? "#11191e" : "#f7f5ef";
+        settingsStatus.textContent = "";
+        if (save) {
+          try {
+            localStorage.setItem("jordan-journey-theme", themeSelect.value);
+            settingsStatus.textContent = "บันทึกธีมนี้ไว้แล้ว";
+          } catch (error) {
+            settingsStatus.textContent = "เปลี่ยนธีมแล้ว แต่บันทึกค่าบนเบราว์เซอร์ไม่ได้";
+          }
+        }
+      }
+
+      try {
+        const savedTheme = localStorage.getItem("jordan-journey-theme");
+        if (savedTheme === "dark" || savedTheme === "light") applyTheme(savedTheme);
+      } catch (error) {
+        settingsStatus.textContent = "อ่านค่าธีมที่บันทึกไว้ไม่ได้ ใช้ธีมสว่างแทน";
+      }
+
+      settingsButton.addEventListener("click", () => {
+        const isOpening = settingsPanel.hidden;
+        settingsPanel.hidden = !isOpening;
+        settingsButton.setAttribute("aria-expanded", String(isOpening));
+        if (isOpening) themeSelect.focus();
+      });
+      themeSelect.addEventListener("change", () => applyTheme(themeSelect.value, true));
+      document.addEventListener("click", event => {
+        if (!settingsPanel.hidden && !settingsPanel.contains(event.target) && !settingsButton.contains(event.target)) {
+          settingsPanel.hidden = true;
+          settingsButton.setAttribute("aria-expanded", "false");
+        }
+      });
+      document.addEventListener("keydown", event => {
+        if (event.key === "Escape" && !settingsPanel.hidden) {
+          settingsPanel.hidden = true;
+          settingsButton.setAttribute("aria-expanded", "false");
+          settingsButton.focus();
+        }
+      });
+
+      document.querySelectorAll(".collapse-button[aria-controls]").forEach(button => {
+        button.addEventListener("click", () => {
+          const content = document.getElementById(button.getAttribute("aria-controls"));
+          const isExpanded = button.getAttribute("aria-expanded") === "true";
+          content.hidden = isExpanded;
+          const card = button.closest(".tool-card");
+          if (card) card.classList.toggle("is-collapsed", isExpanded);
+          button.setAttribute("aria-expanded", String(!isExpanded));
+          button.textContent = isExpanded ? "แสดง" : "ซ่อน";
+        });
+      });
+
+      const amount = document.querySelector("#amount");
+      const converted = document.querySelector("#converted");
+      const rateText = document.querySelector("#rate-text");
+      const fromCurrency = document.querySelector("#from-currency");
+      const toCurrency = document.querySelector("#to-currency");
+      const currencyRates = { USD: 1, THB: 35, JOD: 1.41 };
+      let exchangeRateDate = "";
+      let rateSource = "อัตราโดยประมาณ";
+
+      function updateCurrency() {
+        const value = Number(amount.value);
+        const fromCode = fromCurrency.value;
+        const toCode = toCurrency.value;
+        const fromRate = currencyRates[fromCode];
+        const toRate = currencyRates[toCode];
+        if (!Number.isFinite(value) || value < 0 || !fromRate || !toRate) {
+          converted.value = "";
+          return;
+        }
+        converted.value = (value / fromRate * toRate).toLocaleString("en-US", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
+        const pairRate = toRate / fromRate;
+        const dateLabel = exchangeRateDate ? ` · ${exchangeRateDate}` : "";
+        rateText.textContent = `${rateSource}: 1 ${fromCode} ≈ ${pairRate.toLocaleString("en-US", { maximumFractionDigits: 4 })} ${toCode}${dateLabel}`;
+      }
+
+      amount.addEventListener("input", updateCurrency);
+      fromCurrency.addEventListener("change", updateCurrency);
+      toCurrency.addEventListener("change", updateCurrency);
+      document.querySelector("#currency-swap").addEventListener("click", () => {
+        const previousAmount = amount.value;
+        amount.value = converted.value.replace(/,/g, "");
+        converted.value = previousAmount ? Number(previousAmount).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "";
+        const previousCurrency = fromCurrency.value;
+        fromCurrency.value = toCurrency.value;
+        toCurrency.value = previousCurrency;
+        updateCurrency();
+      });
+
+      async function refreshExchangeRates() {
+        const refreshButton = document.querySelector("#refresh-rate");
+        refreshButton.disabled = true;
+        rateText.textContent = "กำลังโหลดอัตราแลกเปลี่ยนล่าสุด…";
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 10000);
+        try {
+          const response = await fetch("https://open.er-api.com/v6/latest/USD", { signal: controller.signal });
+          if (!response.ok) throw new Error(`Exchange rate service returned ${response.status}`);
+          const data = await response.json();
+          const rates = data.rates;
+          if (data.result !== "success" || !rates || !["JOD", "THB"].every(code => Number.isFinite(rates[code]) && rates[code] > 0)) {
+            throw new Error("Exchange rate service returned incomplete rates");
+          }
+          currencyRates.USD = 1;
+          currencyRates.JOD = rates.JOD;
+          currencyRates.THB = rates.THB;
+          exchangeRateDate = data.time_last_update_utc
+            ? new Date(data.time_last_update_utc).toLocaleDateString("th-TH")
+            : "";
+          rateSource = "อัตราล่าสุด (อ้างอิง USD)";
+          updateCurrency();
+        } catch (error) {
+          rateSource = "อัตราโดยประมาณ (ออฟไลน์)";
+          updateCurrency();
+          if (error.name === "AbortError") {
+            rateText.textContent += " · เชื่อมต่อไม่ทัน ใช้อัตราสำรอง";
+          } else {
+            rateText.textContent += " · ใช้อัตราสำรองเนื่องจากเชื่อมต่อไม่ได้";
+          }
+        } finally {
+          clearTimeout(timeout);
+          refreshButton.disabled = false;
+        }
+      }
+      document.querySelector("#refresh-rate").addEventListener("click", refreshExchangeRates);
+      refreshExchangeRates();
+
+      const dictionary = {
+        th: {
+          ar: { "สวัสดี": ["مرحبا", "มะรฮะบา"], "ขอบคุณ": ["شكرا", "ชุกรัน"], "กรุณา": ["من فضلك", "มิน ฟัฎลิก"], "ห้องน้ำอยู่ไหน": ["أين الحمام؟", "ไอนัล ฮัมมาม?"], "ราคาเท่าไหร่": ["كم السعر؟", "กัม อัสซิอ์ร?"], "ช่วยด้วย": ["النجدة!", "อันนัจดะ!"] },
+          en: { "สวัสดี": ["Hello", "เฮลโล"], "ขอบคุณ": ["Thank you", "แธงก์ ยู"], "กรุณา": ["Please", "พลีซ"], "ห้องน้ำอยู่ไหน": ["Where is the bathroom?", "แวร์ อิส เดอะ บาธรูม?"], "ราคาเท่าไหร่": ["How much is it?", "ฮาว มัช อิส อิท?"], "ช่วยด้วย": ["Help!", "เฮลป์!"] }
+        },
+        en: {
+          ar: { "hello": ["مرحبا", "มะรฮะบา"], "thank you": ["شكرا", "ชุกรัน"], "please": ["من فضلك", "มิน ฟัฎลิก"], "where is the bathroom": ["أين الحمام؟", "ไอนัล ฮัมมาม?"], "how much is it": ["كم السعر؟", "กัม อัสซิอ์ร?"], "help": ["النجدة!", "อันนัจดะ!"] },
+          th: { "hello": ["สวัสดี", ""], "thank you": ["ขอบคุณ", ""], "please": ["กรุณา", ""], "where is the bathroom": ["ห้องน้ำอยู่ไหน", ""], "how much is it": ["ราคาเท่าไหร่", ""], "help": ["ช่วยด้วย", ""] }
+        },
+        ar: {
+          th: { "مرحبا": ["สวัสดี", ""], "شكرا": ["ขอบคุณ", ""], "من فضلك": ["กรุณา", ""], "أين الحمام؟": ["ห้องน้ำอยู่ไหน", ""], "كم السعر؟": ["ราคาเท่าไหร่", ""], "النجدة!": ["ช่วยด้วย", ""] },
+          en: { "مرحبا": ["Hello", ""], "شكرا": ["Thank you", ""], "من فضلك": ["Please", ""], "أين الحمام؟": ["Where is the bathroom?", ""], "كم السعر؟": ["How much is it?", ""], "النجدة!": ["Help!", ""] }
+        }
+      };
+      const airportAreas = [
+        { type: "ขาเข้า", th: "ผู้โดยสารขาเข้า", en: "Arrivals", ar: "الوصول", pronunciation: "อัล-วุศูล" },
+        { type: "ขาออก", th: "ผู้โดยสารขาออก", en: "Departures", ar: "المغادرة", pronunciation: "อัล-มุฆอดะเราะฮ์" },
+        { type: "ตรวจคนเข้าเมือง", th: "ตรวจหนังสือเดินทาง", en: "Passport control", ar: "مراقبة الجوازات", pronunciation: "มุรอกอบะตุล-ญะวาซาต" },
+        { type: "สัมภาระ", th: "รับกระเป๋า", en: "Baggage claim", ar: "استلام الأمتعة", pronunciation: "อิสติลามุล-อะม์ติอะฮ์" },
+        { type: "ศุลกากร", th: "ศุลกากร", en: "Customs", ar: "الجمارك", pronunciation: "อัล-ญะมาริก" },
+        { type: "เช็กอิน", th: "เคาน์เตอร์เช็กอิน", en: "Check-in", ar: "تسجيل الوصول", pronunciation: "ตัสญีลุล-วุศูล" },
+        { type: "ขึ้นเครื่อง", th: "ประตูขึ้นเครื่อง", en: "Boarding gate", ar: "بوابة الصعود", pronunciation: "บะวาบะตุศ-สุอูด" },
+        { type: "บริการ", th: "ประชาสัมพันธ์", en: "Information desk", ar: "مكتب الاستعلامات", pronunciation: "มักตะบุล-อิสติอ์ลามาต" },
+        { type: "บริการ", th: "ห้องน้ำ", en: "Restrooms", ar: "دورات المياه", pronunciation: "เดารอตุล-มิยาฮ์" },
+        { type: "เดินทางต่อ", th: "แท็กซี่", en: "Taxi", ar: "سيارات الأجرة", pronunciation: "ซัยยารอตุล-อุจเราะฮ์" },
+        { type: "เดินทางต่อ", th: "รถโดยสารสนามบิน", en: "Airport bus", ar: "حافلة المطار", pronunciation: "ฮาฟิลาตุล-มะฏ็อร" },
+        { type: "บริการ", th: "ห้องละหมาด", en: "Prayer room", ar: "مصلى", pronunciation: "มุศ็อลลา" }
+      ];
+      const languageNames = { th: "ไทย", en: "English", ar: "العربية" };
+      const speechLanguages = { th: "th-TH", en: "en-US", ar: "ar-JO" };
+      function setSpeechStatus(message) {
+        document.querySelector("#speech-status").textContent = message;
+      }
+
+      function speakText(text, language) {
+        if (!("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) {
+          setSpeechStatus("เบราว์เซอร์นี้ไม่รองรับการออกเสียง");
+          return;
+        }
+        const synthesis = window.speechSynthesis;
+        const matchingVoice = synthesis.getVoices().find(voice =>
+          voice.lang.toLowerCase() === speechLanguages[language].toLowerCase()
+          || voice.lang.toLowerCase().startsWith(`${language}-`)
+        );
+        if (!matchingVoice) {
+          setSpeechStatus(`อุปกรณ์ยังไม่มีเสียงภาษา${languageNames[language]} กรุณาติดตั้งเสียงภาษานี้ใน Windows แล้วลองใหม่`);
+          return;
+        }
+
+        synthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = speechLanguages[language] || language;
+        utterance.voice = matchingVoice;
+        utterance.onstart = () => setSpeechStatus(`กำลังออกเสียง${languageNames[language]} · ${matchingVoice.name}`);
+        utterance.onend = () => setSpeechStatus("อ่านจบแล้ว");
+        utterance.onerror = () => {
+          setSpeechStatus(`ออกเสียงไม่สำเร็จ ตรวจสอบระดับเสียงและอุปกรณ์เสียง (${matchingVoice.name})`);
+        };
+        setSpeechStatus(`กำลังเตรียมเสียง${languageNames[language]}…`);
+        synthesis.speak(utterance);
+      }
+
+      function createSpeakButton(text, language, label) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "speak-button";
+        button.textContent = `🔊 ${label}`;
+        button.setAttribute("aria-label", `ออกเสียง${label}`);
+        button.addEventListener("click", () => speakText(text, language));
+        return button;
+      }
+
+      function findLocalTranslation(source, target, query) {
+        const airportMatch = airportAreas.find(area =>
+          area[source] && area[source].toLocaleLowerCase() === query.toLocaleLowerCase()
+        );
+        if (airportMatch && airportMatch[target]) {
+          return {
+            original: airportMatch[source],
+            translation: airportMatch[target],
+            pronunciation: target === "ar" ? airportMatch.pronunciation : ""
+          };
+        }
+        const entries = dictionary[source] && dictionary[source][target];
+        const match = entries && Object.keys(entries).find(key => key.toLocaleLowerCase() === query.toLocaleLowerCase());
+        return match ? { original: match, translation: entries[match][0], pronunciation: entries[match][1] } : null;
+      }
+
+      function showTranslation(original, translation, pronunciation, source, isLocal = false) {
+        const result = document.querySelector("#translation-result");
+        result.replaceChildren();
+        setSpeechStatus("");
+        const originalLine = document.createElement("div");
+        originalLine.className = "translation-line";
+        const originalText = document.createElement("span");
+        originalText.textContent = `${languageNames[source]}: ${original}`;
+        originalLine.append(originalText, createSpeakButton(original, source, "ฟังต้นฉบับ"));
+        result.append(originalLine);
+        const translatedLine = document.createElement("div");
+        translatedLine.className = "translation-line";
+        const translatedText = document.createElement("strong");
+        translatedText.textContent = translation;
+        if (pronunciation) {
+          const hint = document.createElement("span");
+          hint.style.cssText = "color:#71808a;font-size:11px;font-weight:500";
+          hint.textContent = ` (${pronunciation})`;
+          translatedText.append(hint);
+        }
+        translatedLine.append(translatedText, createSpeakButton(translation, document.querySelector("#target-language").value, "ฟังคำแปล"));
+        result.append(translatedLine);
+        if (isLocal) result.append("แสดงคำแปลจากคลังวลีออฟไลน์");
+      }
+
+      const airportAreaList = document.querySelector("#airport-areas");
+      const airportSearch = document.querySelector("#airport-search");
+      const airportEmpty = document.querySelector("#airport-empty");
+      function renderAirportAreas(search = "") {
+        const query = search.trim().toLocaleLowerCase();
+        airportAreaList.replaceChildren();
+        const matches = airportAreas.filter(area =>
+          [area.type, area.th, area.en, area.ar, area.pronunciation]
+            .some(value => value.toLocaleLowerCase().includes(query))
+        );
+        matches.forEach(area => {
+          const card = document.createElement("div");
+          card.className = "airport-area";
+          const type = document.createElement("span");
+          type.className = "airport-area-type";
+          type.textContent = area.type;
+          const thai = document.createElement("strong");
+          thai.textContent = area.th;
+          const english = document.createElement("span");
+          english.className = "airport-area-en";
+          english.textContent = area.en;
+          const arabic = document.createElement("span");
+          arabic.className = "airport-area-ar";
+          arabic.lang = "ar";
+          arabic.dir = "rtl";
+          arabic.textContent = area.ar;
+          const pronunciation = document.createElement("span");
+          pronunciation.className = "airport-area-pronunciation";
+          pronunciation.textContent = `อ่านว่า ${area.pronunciation}`;
+          const translateButton = document.createElement("button");
+          translateButton.type = "button";
+          translateButton.textContent = "ส่งคำอาหรับไปแปลไทย";
+          translateButton.addEventListener("click", () => {
+            document.querySelector("#source-language").value = "ar";
+            document.querySelector("#target-language").value = "th";
+            document.querySelector("#phrase").value = area.ar;
+            document.querySelector("#translate").scrollIntoView({ behavior: "smooth", block: "center" });
+            findTranslation();
+          });
+          card.append(type, thai, english, arabic, pronunciation, translateButton);
+          airportAreaList.append(card);
+        });
+        airportEmpty.classList.toggle("visible", matches.length === 0);
+      }
+      airportSearch.addEventListener("input", () => renderAirportAreas(airportSearch.value));
+      renderAirportAreas();
+
+      async function findTranslation() {
+        const button = document.querySelector("#translate-button");
+        const source = document.querySelector("#source-language").value;
+        const target = document.querySelector("#target-language").value;
+        const original = document.querySelector("#phrase").value.trim();
+        const query = original.toLocaleLowerCase();
+        const result = document.querySelector("#translation-result");
+        if (!query) {
+          result.textContent = "พิมพ์วลีที่ต้องการค้นหาก่อนนะ";
+          return;
+        }
+        if (source === target) {
+          result.textContent = "เลือกภาษาต้นทางและภาษาแปลให้ต่างกันก่อนนะ";
+          return;
+        }
+        if (original.length > 500) {
+          result.textContent = "ข้อความยาวเกินไป กรุณาใช้ไม่เกิน 500 ตัวอักษร";
+          return;
+        }
+
+        button.disabled = true;
+        button.textContent = "กำลังแปล…";
+        result.textContent = "กำลังเชื่อมต่อบริการแปลภาษา…";
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 12000);
+        try {
+          const params = new URLSearchParams({ q: original, langpair: `${source}|${target}` });
+          const response = await fetch(`https://api.mymemory.translated.net/get?${params}`, {
+            signal: controller.signal
+          });
+          if (!response.ok) throw new Error(`Translation service returned ${response.status}`);
+          const data = await response.json();
+          const translation = data.responseData && data.responseData.translatedText;
+          if (data.responseStatus !== 200 || typeof translation !== "string" || !translation.trim()) {
+            throw new Error("Translation service did not return a translation");
+          }
+          showTranslation(original, translation, "", source);
+        } catch (error) {
+          const local = findLocalTranslation(source, target, original);
+          if (local) {
+            showTranslation(local.original, local.translation, local.pronunciation, source, true);
+            result.append("เชื่อมต่อ API ไม่สำเร็จ");
+          } else {
+            result.textContent = error.name === "AbortError"
+              ? "บริการแปลภาษาตอบช้าเกินไป กรุณาลองอีกครั้ง"
+              : "เชื่อมต่อ API แปลภาษาไม่สำเร็จ ตรวจสอบอินเทอร์เน็ตแล้วลองอีกครั้ง";
+          }
+        } finally {
+          clearTimeout(timeout);
+          button.disabled = false;
+          button.textContent = "แปลด้วย API";
+        }
+      }
+      document.querySelector("#translate-button").addEventListener("click", findTranslation);
+      document.querySelector("#phrase").addEventListener("keydown", event => {
+        if (event.key === "Enter") findTranslation();
+      });
+      document.querySelector("#language-swap").addEventListener("click", () => {
+        const source = document.querySelector("#source-language");
+        const target = document.querySelector("#target-language");
+        const previousSource = source.value;
+        source.value = target.value;
+        target.value = previousSource;
+        document.querySelector("#translation-result").textContent = "สลับภาษาแล้ว ลองค้นหาวลีอีกครั้ง";
+      });
+    })();
+  </script>
+</body>
+</html>
