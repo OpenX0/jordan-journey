@@ -83,6 +83,21 @@
     .section-heading h2 { margin: 0; font-size: 20px; letter-spacing: -.45px; }
     .section-heading p { margin: 5px 0 0; color: var(--muted); font-size: 12px; }
     .section-heading a { color: var(--orange); text-decoration: none; font-size: 12px; font-weight: 700; }
+    .flight-card { padding: 24px; margin-bottom: 30px; }
+    .flight-route { display: grid; grid-template-columns: minmax(0, 1fr) minmax(90px, .6fr) minmax(0, 1fr); align-items: center; gap: 16px; }
+    .flight-endpoint { min-width: 0; }
+    .flight-endpoint:last-child { text-align: right; }
+    .flight-endpoint-label { display: block; margin-bottom: 8px; color: var(--muted); font-size: 10px; }
+    .flight-airport-code { display: block; color: var(--ink); font-size: clamp(25px, 4vw, 34px); font-weight: 800; letter-spacing: -.8px; }
+    .flight-city { display: block; margin-top: 4px; color: var(--ink); font-size: 12px; font-weight: 700; }
+    .flight-airport-name { display: block; margin-top: 4px; color: var(--muted); font-size: 10px; line-height: 1.5; }
+    .flight-path { display: flex; align-items: center; gap: 8px; color: var(--muted); }
+    .flight-path-line { flex: 1; height: 1px; background: var(--line); }
+    .flight-plane { color: var(--orange); font-size: 19px; transform: rotate(0deg); }
+    .flight-path-caption { display: block; margin-top: 8px; color: var(--muted); text-align: center; font-size: 9px; }
+    .flight-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 22px; padding-top: 17px; border-top: 1px solid var(--line); }
+    .flight-search-link { display: inline-block; padding: 11px 15px; border-radius: 8px; color: white; background: var(--blue); text-decoration: none; font-size: 11px; font-weight: 700; }
+    .flight-note { flex: 1; color: var(--muted); font-size: 10px; line-height: 1.6; }
     .tools { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
     .card { background: var(--white); border: 1px solid rgba(31, 49, 57, .05); border-radius: 16px; box-shadow: var(--shadow); }
     .tool-card { min-height: 257px; padding: 22px; }
@@ -112,6 +127,9 @@
     .translate-bottom { display: flex; align-items: center; gap: 9px; }
     .translate-bottom input { flex: 1; min-width: 0; padding: 11px 12px; border: 1px solid var(--line); border-radius: 8px; outline: none; font-size: 12px; }
     .primary-button { padding: 11px 15px; border: 0; border-radius: 8px; color: white; background: var(--blue); font-size: 11px; font-weight: 700; }
+    .voice-button { flex: 0 0 auto; padding: 10px 11px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: var(--control-bg); font-size: 11px; font-weight: 700; }
+    .voice-button[aria-pressed="true"] { color: white; border-color: #b74e42; background: #b74e42; }
+    .voice-button:disabled { cursor: not-allowed; opacity: .55; }
     .translation-result { min-height: 30px; margin-top: 12px; padding: 9px 11px; border-radius: 8px; background: #f5f7f4; color: #607079; font-size: 11px; line-height: 1.55; }
     .translation-line { display: flex; align-items: center; justify-content: space-between; gap: 9px; margin-top: 4px; }
     .translation-line strong { color: var(--ink); font-size: 13px; }
@@ -165,6 +183,7 @@
       .hero-stamp { right: 15px; bottom: 14px; width: 65px; height: 65px; font-size: 8px; }
       .tools, .map-layout { grid-template-columns: 1fr; }
       .tool-card { min-height: 0; padding: 18px; }
+      .flight-card { padding: 18px; }
       .airport-card { padding: 18px; }
       .airport-areas { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .section-heading { margin-top: 28px; }
@@ -181,6 +200,10 @@
       .primary-button { flex: 1; }
       .airport-areas { grid-template-columns: 1fr; }
       .airport-footer { align-items: flex-start; flex-direction: column; }
+      .flight-route { grid-template-columns: minmax(0, 1fr) 48px minmax(0, 1fr); gap: 8px; }
+      .flight-airport-name { font-size: 9px; }
+      .flight-actions { align-items: stretch; flex-direction: column; }
+      .flight-search-link { text-align: center; }
     }
     body[data-theme="dark"] {
       color-scheme: dark;
@@ -219,6 +242,7 @@
         <span>Jordan Journey<small>YOUR LITTLE TRAVEL COMPANION</small></span>
       </a>
       <nav class="nav" aria-label="เมนูหลัก">
+        <a href="#flight">เที่ยวบิน</a>
         <a href="#currency">แปลงค่าเงิน</a>
         <a href="#translate">วลีเดินทาง</a>
         <a href="#airport">สนามบิน</a>
@@ -247,6 +271,37 @@
           <a class="hero-cta" href="#currency">เริ่มวางแผนทริป <span aria-hidden="true">&nbsp; ↗</span></a>
         </div>
         <div class="hero-stamp">AHLAAN<br>WA SAHLAAN<br>أهلاً وسهلاً</div>
+      </section>
+
+      <section id="flight" aria-labelledby="flight-title">
+        <div class="section-heading">
+          <div><h2 id="flight-title">เที่ยวบินจากไทยไปจอร์แดน</h2><p>เส้นทางกรุงเทพฯ (BKK) → อัมมาน (AMM)</p></div>
+          <button class="collapse-button" type="button" aria-expanded="true" aria-controls="flight-content">ซ่อน</button>
+        </div>
+        <article class="card flight-card collapsible-content" id="flight-content">
+          <div class="flight-route">
+            <div class="flight-endpoint">
+              <span class="flight-endpoint-label">ออกเดินทางจาก</span>
+              <span class="flight-airport-code">BKK</span>
+              <span class="flight-city">กรุงเทพฯ, ประเทศไทย</span>
+              <span class="flight-airport-name">ท่าอากาศยานสุวรรณภูมิ</span>
+            </div>
+            <div>
+              <div class="flight-path" aria-hidden="true"><span class="flight-path-line"></span><span class="flight-plane">✈</span><span class="flight-path-line"></span></div>
+              <span class="flight-path-caption">ค้นหาเที่ยวบิน</span>
+            </div>
+            <div class="flight-endpoint">
+              <span class="flight-endpoint-label">เดินทางถึง</span>
+              <span class="flight-airport-code">AMM</span>
+              <span class="flight-city">อัมมาน, ประเทศจอร์แดน</span>
+              <span class="flight-airport-name">ท่าอากาศยานนานาชาติควีนอาเลีย</span>
+            </div>
+          </div>
+          <div class="flight-actions">
+            <a class="flight-search-link" href="https://www.google.com/travel/flights?hl=th&amp;q=Flights%20from%20Bangkok%20to%20Amman" target="_blank" rel="noopener noreferrer">ค้นหาเที่ยวบิน BKK → AMM ↗</a>
+            <span class="flight-note">ราคา ตารางบิน และจุดแวะพักขึ้นอยู่กับวันที่เดินทางและสายการบิน โปรดตรวจสอบรายละเอียดกับผู้ให้บริการก่อนจอง</span>
+          </div>
+        </article>
       </section>
 
       <section id="currency" aria-labelledby="tools-title">
@@ -289,12 +344,14 @@
                 </div>
                 <div class="translate-bottom">
                   <input id="phrase" type="text" placeholder="ลองพิมพ์: สวัสดี, ขอบคุณ, ห้องน้ำอยู่ไหน" aria-label="พิมพ์วลีที่ต้องการค้นหา">
+                  <button class="voice-button" id="voice-input-button" type="button" aria-label="พูดเพื่อป้อนข้อความ" aria-pressed="false">🎙 พูด</button>
                   <button class="primary-button" id="translate-button" type="button">แปลด้วย API</button>
                 </div>
               </div>
               <div class="translation-result" id="translation-result" aria-live="polite">ลองค้นหาวลีท่องเที่ยวพื้นฐาน เช่น “สวัสดี” หรือ “ขอบคุณ”</div>
               <div class="speech-status" id="speech-status" role="status" aria-live="polite"></div>
-              <div class="field-label">ใช้ MyMemory Translation API · ข้อความที่พิมพ์จะถูกส่งไปแปลผ่านอินเทอร์เน็ต</div>
+              <div class="field-label">กด 🎙 พูดเพื่อป้อนข้อความด้วยเสียง หรือพิมพ์เอง · การรู้จำเสียงต้องใช้อินเทอร์เน็ตและอนุญาตไมโครโฟน</div>
+              <div class="field-label">ใช้ MyMemory Translation API · ข้อความที่พิมพ์หรือรู้จำจากเสียงจะถูกส่งไปแปลผ่านอินเทอร์เน็ต</div>
             </div>
           </article>
         </div>
@@ -703,6 +760,82 @@
       document.querySelector("#phrase").addEventListener("keydown", event => {
         if (event.key === "Enter") findTranslation();
       });
+
+      const voiceInputButton = document.querySelector("#voice-input-button");
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        voiceInputButton.disabled = true;
+        voiceInputButton.title = "เบราว์เซอร์นี้ไม่รองรับการรู้จำเสียง ลองใช้ Chrome หรือ Edge";
+      } else {
+        const recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = true;
+        recognition.maxAlternatives = 1;
+        let receivedFinalSpeech = false;
+        let recognitionFailed = false;
+
+        recognition.onstart = () => {
+          receivedFinalSpeech = false;
+          recognitionFailed = false;
+          voiceInputButton.setAttribute("aria-pressed", "true");
+          voiceInputButton.textContent = "⏹ หยุดฟัง";
+          setSpeechStatus(`กำลังฟังภาษา${languageNames[document.querySelector("#source-language").value]}… พูดได้เลย`);
+        };
+        recognition.onresult = event => {
+          let transcript = "";
+          let isFinal = false;
+          for (let index = event.resultIndex; index < event.results.length; index++) {
+            transcript += event.results[index][0].transcript;
+            isFinal ||= event.results[index].isFinal;
+          }
+          if (transcript.trim()) {
+            document.querySelector("#phrase").value = transcript.trim();
+            if (isFinal) {
+              receivedFinalSpeech = true;
+              setSpeechStatus("รับเสียงแล้ว กำลังแปลข้อความ…");
+              findTranslation();
+            }
+          }
+        };
+        recognition.onerror = event => {
+          recognitionFailed = true;
+          const messages = {
+            "not-allowed": "ไม่ได้รับอนุญาตใช้ไมโครโฟน กรุณาอนุญาตไมโครโฟนให้เว็บไซต์ในเบราว์เซอร์",
+            "service-not-allowed": "เบราว์เซอร์ไม่อนุญาตบริการรู้จำเสียง ลองใช้ Chrome หรือ Edge",
+            "no-speech": "ไม่ได้ยินเสียงพูด กรุณากดปุ่มแล้วลองพูดอีกครั้ง",
+            "audio-capture": "ไม่พบไมโครโฟน กรุณาตรวจสอบไมโครโฟนของอุปกรณ์",
+            "network": "รู้จำเสียงไม่สำเร็จ กรุณาตรวจสอบอินเทอร์เน็ตแล้วลองอีกครั้ง"
+          };
+          setSpeechStatus(messages[event.error] || `รู้จำเสียงไม่สำเร็จ (${event.error})`);
+        };
+        recognition.onend = () => {
+          voiceInputButton.setAttribute("aria-pressed", "false");
+          voiceInputButton.textContent = "🎙 พูด";
+          if (!receivedFinalSpeech && voiceInputButton.dataset.stopped === "true") {
+            setSpeechStatus("หยุดฟังแล้ว");
+          } else if (!receivedFinalSpeech && !recognitionFailed) {
+            setSpeechStatus("ยังจับคำพูดไม่ได้ กรุณาพูดใกล้ไมโครโฟนแล้วลองอีกครั้ง");
+          }
+          voiceInputButton.dataset.stopped = "false";
+          recognitionFailed = false;
+        };
+        voiceInputButton.addEventListener("click", () => {
+          if (voiceInputButton.getAttribute("aria-pressed") === "true") {
+            voiceInputButton.dataset.stopped = "true";
+            recognition.stop();
+            return;
+          }
+          recognition.lang = speechLanguages[document.querySelector("#source-language").value];
+          voiceInputButton.dataset.stopped = "false";
+          setSpeechStatus("กำลังขอใช้ไมโครโฟน…");
+          try {
+            recognition.start();
+          } catch (error) {
+            setSpeechStatus("เริ่มใช้ไมโครโฟนไม่ได้ กรุณารอสักครู่แล้วลองอีกครั้ง");
+          }
+        });
+      }
+
       document.querySelector("#language-swap").addEventListener("click", () => {
         const source = document.querySelector("#source-language");
         const target = document.querySelector("#target-language");
